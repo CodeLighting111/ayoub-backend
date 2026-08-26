@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ClientCategoryController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/health', function () {
@@ -9,3 +10,6 @@ Route::get('/health', function () {
         'time' => now()->toIso8601String(),
     ]);
 });
+
+Route::get('/client-categories', [ClientCategoryController::class, 'index']);
+Route::get('/client-categories/{client_category}', [ClientCategoryController::class, 'show']);

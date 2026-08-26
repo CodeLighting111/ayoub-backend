@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ClientCategoryController;
 use App\Http\Controllers\Admin\OnboardingScreenController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,4 +25,11 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
     Route::delete('/onboarding/{onboarding_screen}', [OnboardingScreenController::class, 'destroy'])->name('admin.onboarding.destroy');
     Route::post('/onboarding/{onboarding_screen}/move-up', [OnboardingScreenController::class, 'moveUp'])->name('admin.onboarding.move-up');
     Route::post('/onboarding/{onboarding_screen}/move-down', [OnboardingScreenController::class, 'moveDown'])->name('admin.onboarding.move-down');
+
+    Route::get('/client-categories', [ClientCategoryController::class, 'index'])->name('admin.client-categories.index');
+    Route::get('/client-categories/create', [ClientCategoryController::class, 'create'])->name('admin.client-categories.create');
+    Route::post('/client-categories', [ClientCategoryController::class, 'store'])->name('admin.client-categories.store');
+    Route::get('/client-categories/{client_category}/edit', [ClientCategoryController::class, 'edit'])->name('admin.client-categories.edit');
+    Route::put('/client-categories/{client_category}', [ClientCategoryController::class, 'update'])->name('admin.client-categories.update');
+    Route::delete('/client-categories/{client_category}', [ClientCategoryController::class, 'destroy'])->name('admin.client-categories.destroy');
 });
