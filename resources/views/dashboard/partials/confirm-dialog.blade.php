@@ -2,8 +2,8 @@
     <div class="absolute inset-0 bg-[#1a1c1c]/45 backdrop-blur-[2px]" data-confirm-dismiss></div>
 
     <div class="relative w-full max-w-md rounded-xl border border-outline-variant bg-surface-container-lowest p-6 text-center shadow-[0_16px_40px_rgba(27,94,32,0.16)]">
-        <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-error-container">
-            <span class="material-symbols-outlined text-[28px] text-error">delete</span>
+        <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-error-container" id="dashboard-confirm-icon-wrap">
+            <span class="material-symbols-outlined text-[28px] text-error" id="dashboard-confirm-icon">delete</span>
         </div>
         <h2 class="mb-2 text-lg font-bold text-on-surface" id="dashboard-confirm-title">تأكيد الحذف</h2>
         <p class="mb-6 text-sm leading-6 text-on-surface-variant" id="dashboard-confirm-message">هل أنت متأكد من تنفيذ هذا الإجراء؟</p>
@@ -24,13 +24,39 @@
         const titleEl = document.getElementById('dashboard-confirm-title');
         const messageEl = document.getElementById('dashboard-confirm-message');
         const acceptEl = document.getElementById('dashboard-confirm-accept');
+        const iconWrapEl = document.getElementById('dashboard-confirm-icon-wrap');
+        const iconEl = document.getElementById('dashboard-confirm-icon');
         let pendingForm = null;
+
+        const tones = {
+            danger: {
+                iconWrap: 'bg-error-container',
+                icon: 'text-error',
+                iconName: 'delete',
+                accept: 'rounded-lg bg-error px-6 py-2.5 text-sm font-semibold text-on-error shadow-sm transition-colors hover:bg-[#93000a]',
+            },
+            primary: {
+                iconWrap: 'bg-primary-container/15',
+                icon: 'text-primary-container',
+                iconName: 'logout',
+                accept: 'rounded-lg bg-primary-container px-6 py-2.5 text-sm font-semibold text-on-primary shadow-sm transition-colors hover:bg-primary',
+            },
+        };
+
+        function applyTone(tone) {
+            const styles = tones[tone] || tones.danger;
+            iconWrapEl.className = 'mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full ' + styles.iconWrap;
+            iconEl.className = 'material-symbols-outlined text-[28px] ' + styles.icon;
+            iconEl.textContent = styles.iconName;
+            acceptEl.className = styles.accept;
+        }
 
         function open(options) {
             const settings = options || {};
             titleEl.textContent = settings.title || 'تأكيد الحذف';
             messageEl.textContent = settings.message || 'هل أنت متأكد من تنفيذ هذا الإجراء؟';
             acceptEl.textContent = settings.confirmText || 'حذف';
+            applyTone(settings.tone || 'danger');
             pendingForm = settings.form || null;
             dialog.classList.remove('hidden');
             dialog.classList.add('flex');
@@ -76,6 +102,7 @@
                 title: form.getAttribute('data-confirm-title') || 'تأكيد الحذف',
                 message: form.getAttribute('data-confirm') || 'هل أنت متأكد من الحذف؟',
                 confirmText: form.getAttribute('data-confirm-action') || 'حذف',
+                tone: form.getAttribute('data-confirm-tone') || 'danger',
             });
         });
 

@@ -23,21 +23,21 @@
     @if ($framed)
         <div class="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-outline-variant bg-surface-container-lowest p-1.5 shadow-sm">
             <img
-                alt="شعار ايوب جملة"
+                alt="شعار {{ $platformName }}"
                 class="h-full w-full object-contain"
-                src="{{ asset('images/brand/logo.png') }}"
+                src="{{ $platformLogoUrl }}"
             >
         </div>
     @else
         <img
-            alt="شعار ايوب جملة"
+            alt="شعار {{ $platformName }}"
             @class([$imgClass, 'shrink-0'])
-            src="{{ asset('images/brand/logo.png') }}"
+            src="{{ $platformLogoUrl }}"
         >
     @endif
     @if ($showText)
         <div @class(['text-center' => $stacked ?? false, 'w-full' => ($stacked ?? false) && $size === 'sidebar'])>
-            <div @class([$titleClass, 'font-bold text-primary-container'])>ايوب جملة</div>
+            <div @class([$titleClass, 'font-bold text-primary-container'])>{{ $platformName }}</div>
             @if ($subtitle ?? false)
                 <p class="mt-1 text-xs leading-4 text-on-surface-variant">{{ $subtitle }}</p>
             @endif

@@ -4,7 +4,7 @@
         theme: {
             extend: {
                 colors: {
-                    /* Ayoub Jomla App — ayoub_jomla_2 DESIGN.md */
+                    /* Souqna App — ayoub_jomla_2 DESIGN.md */
                     primary: '#00450d',
                     'on-primary': '#ffffff',
                     'primary-container': '#1b5e20',

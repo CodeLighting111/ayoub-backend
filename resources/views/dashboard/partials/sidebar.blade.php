@@ -2,16 +2,21 @@
     $menuItems = [
         ['key' => 'onboarding', 'label' => 'الصفحات الابتدائية', 'icon' => 'home', 'route' => 'admin.onboarding.index'],
         ['key' => 'customer-categories', 'label' => 'فئات العملاء', 'icon' => 'people', 'route' => 'admin.client-categories.index'],
-        ['key' => 'governorates', 'label' => 'المحافظات', 'icon' => 'map', 'route' => null],
-        ['key' => 'cities', 'label' => 'المدن', 'icon' => 'location_city', 'route' => null],
-        ['key' => 'areas', 'label' => 'المناطق', 'icon' => 'location_on', 'route' => null],
-        ['key' => 'clients', 'label' => 'العملاء', 'icon' => 'person', 'route' => null],
-        ['key' => 'main-categories', 'label' => 'فئات المنتجات الرئيسية', 'icon' => 'category', 'route' => null],
-        ['key' => 'sub-categories', 'label' => 'فئات المنتجات الفرعية', 'icon' => 'reorder', 'route' => null],
-        ['key' => 'products', 'label' => 'المنتجات', 'icon' => 'inventory_2', 'route' => null],
-        ['key' => 'orders', 'label' => 'الطلبات', 'icon' => 'shopping_cart', 'route' => null],
-        ['key' => 'complaints', 'label' => 'الشكاوى', 'icon' => 'report_problem', 'route' => null],
-        ['key' => 'about', 'label' => 'عنا', 'icon' => 'info', 'route' => null],
+        ['key' => 'governorates', 'label' => 'المحافظات', 'icon' => 'map', 'route' => 'admin.governorates.index'],
+        ['key' => 'cities', 'label' => 'المدن', 'icon' => 'location_city', 'route' => 'admin.cities.index'],
+        ['key' => 'areas', 'label' => 'المناطق', 'icon' => 'location_on', 'route' => 'admin.areas.index'],
+        ['key' => 'clients', 'label' => 'العملاء', 'icon' => 'person', 'route' => 'admin.clients.index'],
+        ['key' => 'brands', 'label' => 'العلامات التجارية', 'icon' => 'sell', 'route' => 'admin.brands.index'],
+        ['key' => 'main-categories', 'label' => 'فئات المنتجات الرئيسية', 'icon' => 'category', 'route' => 'admin.main-product-categories.index'],
+        ['key' => 'sub-categories', 'label' => 'فئات المنتجات الفرعية', 'icon' => 'reorder', 'route' => 'admin.sub-product-categories.index'],
+        ['key' => 'products', 'label' => 'المنتجات', 'icon' => 'inventory_2', 'route' => 'admin.products.index'],
+        ['key' => 'orders', 'label' => 'الطلبات', 'icon' => 'shopping_cart', 'route' => 'admin.orders.index'],
+        ['key' => 'notifications', 'label' => 'الإشعارات', 'icon' => 'notifications', 'route' => 'admin.notifications.index'],
+        ['key' => 'complaints', 'label' => 'الشكاوى', 'icon' => 'report_problem', 'route' => 'admin.complaints.index'],
+        ['key' => 'about', 'label' => 'عنا', 'icon' => 'info', 'route' => 'admin.about.edit'],
+        ['key' => 'settings', 'label' => 'الإعدادات العامة', 'icon' => 'settings', 'route' => 'admin.settings.edit'],
+        ['key' => 'roles', 'label' => 'الأدوار', 'icon' => 'badge', 'route' => 'admin.roles.index'],
+        ['key' => 'admins', 'label' => 'إضافة مشرف', 'icon' => 'person_add', 'route' => 'admin.admins.create'],
     ];
 @endphp
 
@@ -46,7 +51,7 @@
     </nav>
 
     <div class="border-t border-outline-variant bg-surface-container-low p-4">
-        <form action="{{ route('admin.logout') }}" method="POST">
+        <form action="{{ route('admin.logout') }}" data-confirm="هل أنت متأكد من تسجيل الخروج؟" data-confirm-action="تسجيل الخروج" data-confirm-title="تأكيد تسجيل الخروج" data-confirm-tone="primary" method="POST">
             @csrf
             <button
                 class="flex w-full items-center justify-center gap-2 rounded-lg bg-error px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#9f1515]"

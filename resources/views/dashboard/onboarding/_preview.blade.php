@@ -6,7 +6,10 @@
     $activeDot = min(max($previewOrder, 1), 3);
 @endphp
 
-<div class="dashboard-card rounded-xl border border-outline-variant/40 bg-surface-container-lowest p-6 {{ ($sticky ?? true) ? 'lg:sticky lg:top-24' : '' }}">
+<div @class([
+    'lg:sticky lg:top-24' => $sticky ?? true,
+    'dashboard-card rounded-xl border border-outline-variant/40 bg-surface-container-lowest p-6' => ! ($embedded ?? false),
+])>
     <h2 class="mb-1 flex items-center gap-2 text-lg font-semibold text-primary-container">
         <span class="material-symbols-outlined">smartphone</span>
         {{ $previewHeading ?? 'معاينة التطبيق' }}
@@ -17,7 +20,7 @@
         <div class="flex h-[560px] w-[270px] flex-col overflow-hidden rounded-[36px] border-[10px] border-on-surface bg-surface shadow-[0px_10px_30px_rgba(20,83,45,0.08)]">
             <div class="flex items-center justify-between px-4 pb-2 pt-5">
                 <span class="text-xs font-medium text-on-surface-variant">تخطي</span>
-                <span class="text-sm font-semibold text-primary-container">ايوب جملة</span>
+                <span class="text-sm font-semibold text-primary-container">{{ $platformName }}</span>
                 <span class="w-10"></span>
             </div>
             <div class="flex flex-1 flex-col px-4 pt-2">

@@ -2,7 +2,7 @@
     $cancelUrl = route('admin.client-categories.index');
 @endphp
 
-<div class="dashboard-card max-w-3xl rounded-xl border border-outline-variant bg-surface-container-lowest p-6">
+<div class="dashboard-card w-full rounded-xl border border-outline-variant bg-surface-container-lowest p-6">
     <form action="{{ $action }}" class="space-y-6" method="POST">
         @csrf
         @if ($method ?? false)

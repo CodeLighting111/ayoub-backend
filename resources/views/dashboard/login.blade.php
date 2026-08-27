@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>تسجيل الدخول - ايوب جملة</title>
+    <title>تسجيل الدخول - {{ $platformName }}</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
@@ -51,9 +51,9 @@
             <div class="w-full max-w-xl">
                 <div class="mb-8 flex justify-center">
                     <img
-                        alt="شعار ايوب جملة"
+                        alt="شعار {{ $platformName }}"
                         class="h-52 w-auto max-w-[400px] object-contain sm:max-w-[460px] md:h-60 md:max-w-[520px] lg:h-72 lg:max-w-[580px]"
-                        src="{{ asset('images/brand/logo.png') }}"
+                        src="{{ $platformLogoUrl }}"
                     >
                 </div>
 
