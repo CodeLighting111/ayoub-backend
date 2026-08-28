@@ -92,6 +92,12 @@ $permissionGroups = [
         ['name' => 'تعديل حسابات السوشيال ميديا', 'slug' => 'social_media_accounts.edit'],
         ['name' => 'حذف حسابات السوشيال ميديا', 'slug' => 'social_media_accounts.delete'],
     ],
+    'البانرات' => [
+        ['name' => 'عرض البانرات', 'slug' => 'banners.view'],
+        ['name' => 'إضافة بانر', 'slug' => 'banners.create'],
+        ['name' => 'تعديل البانرات', 'slug' => 'banners.edit'],
+        ['name' => 'حذف البانرات', 'slug' => 'banners.delete'],
+    ],
     'الإعدادات العامة' => [
         ['name' => 'عرض الإعدادات العامة', 'slug' => 'settings.view'],
         ['name' => 'تعديل الإعدادات العامة', 'slug' => 'settings.manage'],

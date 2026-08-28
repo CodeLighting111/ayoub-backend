@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\SocialMediaAccountController;
 use App\Http\Controllers\Admin\StatisticsController;
 use App\Http\Controllers\Admin\AreaController;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\Admin\ClientCategoryController;
@@ -134,6 +135,13 @@ Route::middleware(['auth:admin', 'admin.active'])->prefix('admin')->group(functi
     Route::get('/social-media-accounts/{social_media_account}/edit', [SocialMediaAccountController::class, 'edit'])->name('admin.social-media-accounts.edit');
     Route::put('/social-media-accounts/{social_media_account}', [SocialMediaAccountController::class, 'update'])->name('admin.social-media-accounts.update');
     Route::delete('/social-media-accounts/{social_media_account}', [SocialMediaAccountController::class, 'destroy'])->name('admin.social-media-accounts.destroy');
+
+    Route::get('/banners', [BannerController::class, 'index'])->name('admin.banners.index');
+    Route::get('/banners/create', [BannerController::class, 'create'])->name('admin.banners.create');
+    Route::post('/banners', [BannerController::class, 'store'])->name('admin.banners.store');
+    Route::get('/banners/{banner}/edit', [BannerController::class, 'edit'])->name('admin.banners.edit');
+    Route::put('/banners/{banner}', [BannerController::class, 'update'])->name('admin.banners.update');
+    Route::delete('/banners/{banner}', [BannerController::class, 'destroy'])->name('admin.banners.destroy');
 
     Route::get('/settings', [GeneralSettingController::class, 'edit'])->name('admin.settings.edit');
     Route::put('/settings', [GeneralSettingController::class, 'update'])->name('admin.settings.update');

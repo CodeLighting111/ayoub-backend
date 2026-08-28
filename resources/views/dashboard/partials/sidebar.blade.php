@@ -1,6 +1,7 @@
 @php
     $menuItems = [
         ['key' => 'onboarding', 'label' => 'الصفحات الابتدائية', 'icon' => 'home', 'route' => 'admin.onboarding.index'],
+        ['key' => 'banners', 'label' => 'البانرات', 'icon' => 'view_carousel', 'route' => 'admin.banners.index'],
         ['key' => 'customer-categories', 'label' => 'فئات العملاء', 'icon' => 'people', 'route' => 'admin.client-categories.index'],
         ['key' => 'governorates', 'label' => 'المحافظات', 'icon' => 'map', 'route' => 'admin.governorates.index'],
         ['key' => 'cities', 'label' => 'المدن', 'icon' => 'location_city', 'route' => 'admin.cities.index'],
