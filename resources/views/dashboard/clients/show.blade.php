@@ -127,4 +127,139 @@
             </div>
         </div>
     </div>
+
+    @php
+        $orderFilterParams = fn (array $extra = []) => array_filter(array_merge([
+            'status' => $status ?: null,
+            'month' => $month,
+            'year' => $year,
+        ], $extra));
+        $clientShowRoute = fn (array $params = []) => route('admin.clients.show', array_merge(['client' => $client], $params));
+        $arabicMonths = [
+            1 => 'يناير', 2 => 'فبراير', 3 => 'مارس', 4 => 'أبريل',
+            5 => 'مايو', 6 => 'يونيو', 7 => 'يوليو', 8 => 'أغسطس',
+            9 => 'سبتمبر', 10 => 'أكتوبر', 11 => 'نوفمبر', 12 => 'ديسمبر',
+        ];
+    @endphp
+
+    <div class="mt-8">
+        <div class="mb-6 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+            <div>
+                <h2 class="dashboard-page-title mb-1 text-lg text-on-surface">طلبات العميل</h2>
+                <p class="text-sm text-on-surface-variant">جميع الطلبات المرتبطة بهذا العميل مع إمكانية التصفية.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+                <div class="dashboard-card rounded-xl border border-outline-variant bg-surface-container-lowest px-5 py-3">
+                    <p class="text-xs text-on-surface-variant">إجمالي الطلبات</p>
+                    <p class="text-2xl font-bold text-primary-container">{{ $stats['total'] }}</p>
+                </div>
+                @if ($month && $year)
+                    <div class="dashboard-card rounded-xl border border-primary-container/30 bg-primary-container/5 px-5 py-3">
+                        <p class="text-xs text-on-surface-variant">إجمالي {{ $arabicMonths[$month] }} {{ $year }}</p>
+                        <p class="text-2xl font-bold text-primary-container" dir="ltr">{{ number_format((float) $monthlyTotal, 2) }} ج.م</p>
+                        <p class="mt-1 text-xs text-on-surface-variant">{{ $monthlyOrdersCount }} طلب</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+
+        <div class="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-7">
+            @foreach ([
+                ['key' => '', 'label' => 'الكل', 'value' => $stats['total']],
+                ['key' => 'pending', 'label' => 'قيد الانتظار', 'value' => $stats['pending']],
+                ['key' => 'accepted', 'label' => 'مقبول', 'value' => $stats['accepted']],
+                ['key' => 'processing', 'label' => 'قيد التجهيز', 'value' => $stats['processing']],
+                ['key' => 'shipped', 'label' => 'تم الشحن', 'value' => $stats['shipped']],
+                ['key' => 'delivered', 'label' => 'تم التوصيل', 'value' => $stats['delivered']],
+                ['key' => 'cancelled', 'label' => 'ملغى', 'value' => $stats['cancelled']],
+            ] as $stat)
+                <a
+                    @class([
+                        'dashboard-card rounded-xl border p-4 transition-colors',
+                        'border-primary-container bg-primary-container/5' => $status === $stat['key'],
+                        'border-outline-variant bg-surface-container-lowest hover:bg-surface-container-low' => $status !== $stat['key'],
+                    ])
+                    href="{{ $clientShowRoute($orderFilterParams(['status' => $stat['key'] ?: null])) }}"
+                >
+                    <p class="text-xs text-on-surface-variant">{{ $stat['label'] }}</p>
+                    <p @class(['mt-1 text-2xl font-bold', \App\Models\Order::statusAccentClass($stat['key'] ?: null)])>{{ $stat['value'] }}</p>
+                </a>
+            @endforeach
+        </div>
+
+        <div class="dashboard-card mb-6 overflow-hidden rounded-xl border border-outline-variant bg-surface-container-lowest">
+            <form action="{{ route('admin.clients.show', $client) }}" class="flex flex-col items-stretch justify-between gap-4 border-b border-outline-variant bg-surface-bright p-6 lg:flex-row lg:items-end" method="GET">
+                @if ($status !== '')
+                    <input name="status" type="hidden" value="{{ $status }}">
+                @endif
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-on-surface" for="month">الشهر</label>
+                        <select class="dashboard-select-plain w-full rounded-lg border border-outline-variant bg-surface py-2.5 px-4 text-sm outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/20" id="month" name="month">
+                            <option value="">— اختر الشهر —</option>
+                            @foreach ($arabicMonths as $monthNumber => $monthLabel)
+                                <option @selected($month === $monthNumber) value="{{ $monthNumber }}">{{ $monthLabel }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-on-surface" for="year">السنة</label>
+                        <select class="dashboard-select-plain w-full rounded-lg border border-outline-variant bg-surface py-2.5 px-4 text-sm outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/20" id="year" name="year">
+                            <option value="">— اختر السنة —</option>
+                            @for ($yearOption = now()->year; $yearOption >= now()->year - 5; $yearOption--)
+                                <option @selected($year === $yearOption) value="{{ $yearOption }}">{{ $yearOption }}</option>
+                            @endfor
+                        </select>
+                    </div>
+                    <div class="flex items-end gap-2">
+                        <button class="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary-container px-4 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary" type="submit">
+                            <span class="material-symbols-outlined text-[18px]">filter_alt</span>
+                            تصفية
+                        </button>
+                        @if ($month || $year)
+                            <a class="flex items-center justify-center rounded-lg border border-outline-variant px-4 py-2.5 text-sm font-semibold text-on-surface-variant transition-colors hover:bg-surface-container" href="{{ $clientShowRoute($orderFilterParams(['month' => null, 'year' => null])) }}" title="إلغاء تصفية الشهر">
+                                <span class="material-symbols-outlined text-[18px]">close</span>
+                            </a>
+                        @endif
+                    </div>
+                </div>
+            </form>
+
+            <div class="dashboard-table-head grid grid-cols-12 items-center gap-4 border-b border-outline-variant bg-surface-container-low p-6 text-right text-on-surface-variant">
+                <div class="col-span-2">رقم الطلب</div>
+                <div class="col-span-2">تاريخ الطلب</div>
+                <div class="col-span-2">طريقة الدفع</div>
+                <div class="col-span-2">الإجمالي</div>
+                <div class="col-span-2">الحالة</div>
+                <div class="col-span-2 text-center">الإجراءات</div>
+            </div>
+
+            <div class="divide-y divide-outline-variant/70">
+                @forelse ($orders as $order)
+                    <div class="grid grid-cols-12 items-center gap-4 p-6 text-right transition-colors hover:bg-surface-container-low/80">
+                        <div class="col-span-2 text-sm font-semibold text-on-surface" dir="ltr">{{ $order->order_number }}</div>
+                        <div class="col-span-2 text-sm text-on-surface-variant" dir="ltr">{{ optional($order->created_at)->format('Y-m-d H:i') }}</div>
+                        <div class="col-span-2 text-sm text-on-surface">{{ $order->paymentMethodLabel() }}</div>
+                        <div class="col-span-2 text-sm font-semibold text-on-surface" dir="ltr">{{ number_format($order->total, 2) }} ج.م</div>
+                        <div class="col-span-2">
+                            @include('dashboard.orders.partials.status-badge', ['order' => $order])
+                        </div>
+                        <div class="col-span-2 flex justify-center">
+                            <a class="text-on-surface-variant transition-colors hover:text-primary-container" href="{{ route('admin.orders.show', $order) }}" title="عرض">
+                                <span class="material-symbols-outlined">visibility</span>
+                            </a>
+                        </div>
+                    </div>
+                @empty
+                    <div class="p-12 text-center text-sm text-on-surface-variant">
+                        @if ($status !== '' || $month || $year)
+                            لا توجد طلبات مطابقة للتصفية المحددة.
+                        @else
+                            لا توجد طلبات لهذا العميل حتى الآن.
+                        @endif
+                    </div>
+                @endforelse
+            </div>
+        </div>
+    </div>
 @endsection

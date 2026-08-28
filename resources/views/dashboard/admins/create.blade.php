@@ -2,7 +2,7 @@
 
 @section('title', 'إضافة مشرف')
 
-@section('breadcrumb', 'إضافة مشرف')
+@section('breadcrumb', 'المشرفين / إضافة')
 
 @section('content')
     <div class="mb-8">
@@ -112,8 +112,8 @@
                 <button class="rounded-lg bg-primary-container px-8 py-3 text-sm font-semibold text-on-primary shadow-sm transition-colors hover:bg-primary" type="submit">
                     إضافة المشرف
                 </button>
-                <a class="rounded-lg border border-outline-variant px-6 py-3 text-sm font-semibold text-primary transition-colors hover:bg-surface-container" href="{{ route('admin.roles.index') }}">
-                    عرض الأدوار
+                <a class="rounded-lg border border-outline-variant px-6 py-3 text-sm font-semibold text-primary transition-colors hover:bg-surface-container" href="{{ route('admin.admins.index') }}">
+                    رجوع للقائمة
                 </a>
             </div>
         </form>

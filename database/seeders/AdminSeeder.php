@@ -19,6 +19,7 @@ class AdminSeeder extends Seeder
                 'password' => 'admin123',
                 'role' => 'superadmin',
                 'role_id' => $superadminRoleId,
+                'status' => 'active',
             ],
         );
     }

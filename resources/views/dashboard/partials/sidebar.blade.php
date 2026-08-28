@@ -11,12 +11,14 @@
         ['key' => 'sub-categories', 'label' => 'فئات المنتجات الفرعية', 'icon' => 'reorder', 'route' => 'admin.sub-product-categories.index'],
         ['key' => 'products', 'label' => 'المنتجات', 'icon' => 'inventory_2', 'route' => 'admin.products.index'],
         ['key' => 'orders', 'label' => 'الطلبات', 'icon' => 'shopping_cart', 'route' => 'admin.orders.index'],
+        ['key' => 'statistics', 'label' => 'الإحصائيات', 'icon' => 'bar_chart', 'route' => 'admin.statistics.index'],
         ['key' => 'notifications', 'label' => 'الإشعارات', 'icon' => 'notifications', 'route' => 'admin.notifications.index'],
         ['key' => 'complaints', 'label' => 'الشكاوى', 'icon' => 'report_problem', 'route' => 'admin.complaints.index'],
         ['key' => 'about', 'label' => 'عنا', 'icon' => 'info', 'route' => 'admin.about.edit'],
+        ['key' => 'social-media-accounts', 'label' => 'السوشيال ميديا', 'icon' => 'share', 'route' => 'admin.social-media-accounts.index'],
         ['key' => 'settings', 'label' => 'الإعدادات العامة', 'icon' => 'settings', 'route' => 'admin.settings.edit'],
         ['key' => 'roles', 'label' => 'الأدوار', 'icon' => 'badge', 'route' => 'admin.roles.index'],
-        ['key' => 'admins', 'label' => 'إضافة مشرف', 'icon' => 'person_add', 'route' => 'admin.admins.create'],
+        ['key' => 'admins', 'label' => 'المشرفين', 'icon' => 'groups', 'route' => 'admin.admins.index'],
     ];
 @endphp
 
@@ -45,7 +47,16 @@
                 href="{{ $href }}"
             >
                 <span class="material-symbols-outlined text-[22px]">{{ $item['icon'] }}</span>
-                <span>{{ $item['label'] }}</span>
+                <span class="flex-1">{{ $item['label'] }}</span>
+                @if (($sidebarBadges[$item['key']] ?? 0) > 0)
+                    <span @class([
+                        'flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold',
+                        'bg-white text-error' => $isActive,
+                        'bg-error text-white' => ! $isActive,
+                    ])>
+                        {{ ($sidebarBadges[$item['key']] ?? 0) > 99 ? '99+' : $sidebarBadges[$item['key']] }}
+                    </span>
+                @endif
             </a>
         @endforeach
     </nav>

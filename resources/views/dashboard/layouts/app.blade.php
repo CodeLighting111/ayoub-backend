@@ -69,6 +69,15 @@
             padding-left: 2.5rem !important;
             padding-right: 1rem;
         }
+        select.dashboard-select-plain {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: none;
+        }
+        select.dashboard-select-plain::-ms-expand {
+            display: none;
+        }
     </style>
     @stack('head')
 </head>

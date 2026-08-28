@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AdminNotification;
+use App\Models\ClientNotification;
 use App\Services\AdminNotificationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -15,7 +16,7 @@ class NotificationController extends Controller
     public function index(): View
     {
         $notifications = AdminNotification::query()
-            ->with('order')
+            ->with(['order', 'complaint', 'product'])
             ->latest()
             ->get();
 
@@ -24,10 +25,19 @@ class NotificationController extends Controller
             'unread' => $notifications->whereNull('read_at')->count(),
             'new_orders' => $notifications->where('type', AdminNotification::TYPE_NEW_ORDER)->count(),
             'cancelled' => $notifications->where('type', AdminNotification::TYPE_ORDER_CANCELLED)->count(),
+            'complaints' => $notifications->where('type', AdminNotification::TYPE_NEW_COMPLAINT)->count(),
+            'low_stock' => $notifications->where('type', AdminNotification::TYPE_LOW_STOCK)->count(),
         ];
+
+        $sentNotifications = ClientNotification::query()
+            ->with(['client:id,name,phone', 'admin:id,name'])
+            ->latest()
+            ->limit(20)
+            ->get();
 
         return view('dashboard.notifications.index', [
             'notifications' => $notifications,
+            'sentNotifications' => $sentNotifications,
             'stats' => $stats,
             'activeMenu' => 'notifications',
         ]);
@@ -37,7 +47,13 @@ class NotificationController extends Controller
     {
         $this->notificationService->markAsRead($notification);
 
-        return redirect()->route('admin.orders.show', $notification->order_id);
+        $target = $notification->redirectTarget();
+
+        if ($target === null) {
+            return redirect()->route('admin.notifications.index');
+        }
+
+        return redirect()->route($target[0], $target[1]);
     }
 
     public function markAllRead(): RedirectResponse

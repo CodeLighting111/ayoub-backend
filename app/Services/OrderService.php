@@ -89,7 +89,10 @@ class OrderService
                     'line_total' => $lineItem['line_total'],
                 ]);
 
+                $previousStock = $product->stock;
                 $product->decrement('stock', $lineItem['quantity']);
+                $product->refresh();
+                $this->notificationService->maybeNotifyLowStock($product, $previousStock);
             }
 
             $this->notificationService->notifyNewOrder($order);

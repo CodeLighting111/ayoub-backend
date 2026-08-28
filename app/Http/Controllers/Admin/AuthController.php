@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,10 @@ class AuthController extends Controller
 {
     public function create(): View|RedirectResponse
     {
+        if (Auth::guard('admin')->check()) {
+            return redirect()->route('admin.dashboard');
+        }
+
         return view('dashboard.login');
     }
 
@@ -27,6 +32,22 @@ class AuthController extends Controller
             throw ValidationException::withMessages([
                 'email' => 'بيانات الدخول غير صحيحة.',
             ]);
+        }
+
+        $admin = Auth::guard('admin')->user();
+
+        if (Admin::hasStatusColumn()) {
+            if ($admin->isPrimarySuperAdmin()) {
+                if (! $admin->isActive()) {
+                    $admin->forceFill(['status' => 'active'])->saveQuietly();
+                }
+            } elseif (! $admin->isActive()) {
+                Auth::guard('admin')->logout();
+
+                throw ValidationException::withMessages([
+                    'email' => 'حسابك غير نشط. تواصل مع مدير النظام.',
+                ]);
+            }
         }
 
         $request->session()->regenerate();

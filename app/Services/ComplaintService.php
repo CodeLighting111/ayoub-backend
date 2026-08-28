@@ -8,6 +8,8 @@ use Illuminate\Validation\ValidationException;
 
 class ComplaintService
 {
+    public function __construct(private readonly AdminNotificationService $notificationService) {}
+
     public function create(Client $client, string $subject, string $message, ?int $orderId = null): Complaint
     {
         if ($orderId !== null && ! $client->orders()->whereKey($orderId)->exists()) {
@@ -16,7 +18,7 @@ class ComplaintService
             ]);
         }
 
-        return Complaint::query()->create([
+        $complaint = Complaint::query()->create([
             'client_id' => $client->id,
             'order_id' => $orderId,
             'status' => 'pending',
@@ -25,6 +27,10 @@ class ComplaintService
             'client_name' => $client->name,
             'client_phone' => $client->phone,
         ]);
+
+        $this->notificationService->notifyNewComplaint($complaint);
+
+        return $complaint;
     }
 
     public function updateStatus(Complaint $complaint, string $status, ?string $adminResponse = null): Complaint

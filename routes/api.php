@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AreaController;
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\CityController;
 use App\Http\Controllers\Api\ClientCategoryController;
+use App\Http\Controllers\Api\ClientNotificationController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\ComplaintController;
 use App\Http\Controllers\Api\GovernorateController;
@@ -33,6 +34,10 @@ Route::get('/cities/{city}', [CityController::class, 'show']);
 
 Route::get('/areas', [AreaController::class, 'index']);
 Route::get('/areas/{area}', [AreaController::class, 'show']);
+
+Route::get('/clients/{client}/notifications', [ClientNotificationController::class, 'index']);
+Route::patch('/clients/{client}/notifications/{notification}/read', [ClientNotificationController::class, 'markAsRead']);
+Route::post('/clients/{client}/notifications/mark-all-read', [ClientNotificationController::class, 'markAllAsRead']);
 
 Route::get('/clients', [ClientController::class, 'index']);
 Route::get('/clients/{client}', [ClientController::class, 'show']);

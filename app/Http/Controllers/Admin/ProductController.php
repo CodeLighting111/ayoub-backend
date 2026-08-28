@@ -8,6 +8,7 @@ use App\Models\Brand;
 use App\Models\MainProductCategory;
 use App\Models\Product;
 use App\Models\SubProductCategory;
+use App\Services\AdminNotificationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -16,6 +17,8 @@ use Illuminate\View\View;
 
 class ProductController extends Controller
 {
+    public function __construct(private readonly AdminNotificationService $notificationService) {}
+
     public function index(Request $request): View
     {
         $search = trim((string) $request->query('q', ''));
@@ -60,12 +63,14 @@ class ProductController extends Controller
         $imageUrl = $this->storeImage($request->file('image'));
 
         try {
-            Product::query()->create(array_merge($data, ['image_url' => $imageUrl]));
+            $product = Product::query()->create(array_merge($data, ['image_url' => $imageUrl]));
         } catch (\Throwable $exception) {
             $this->deleteImage($imageUrl);
 
             throw $exception;
         }
+
+        $this->notificationService->notifyLowStockIfNeeded($product);
 
         return redirect()
             ->route('admin.products.index')
@@ -94,7 +99,9 @@ class ProductController extends Controller
             $data['image_url'] = $this->storeImage($request->file('image'));
         }
 
+        $previousStock = $product->stock;
         $product->update($data);
+        $this->notificationService->maybeNotifyLowStock($product->fresh(), $previousStock);
 
         return redirect()
             ->route('admin.products.index')

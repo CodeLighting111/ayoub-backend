@@ -66,4 +66,9 @@ class Client extends Model
     {
         return $this->hasMany(Complaint::class);
     }
+
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(ClientNotification::class);
+    }
 }

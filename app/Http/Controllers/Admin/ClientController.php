@@ -9,6 +9,7 @@ use App\Models\City;
 use App\Models\Client;
 use App\Models\ClientCategory;
 use App\Models\Governorate;
+use App\Models\Order;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -58,13 +59,62 @@ class ClientController extends Controller
             ->with('success', 'تم إضافة العميل بنجاح.');
     }
 
-    public function show(Client $client): View
+    public function show(Request $request, Client $client): View
     {
         $client->load(['category', 'governorate', 'city', 'area']);
+
+        $status = (string) $request->query('status', '');
+        $month = $request->query('month');
+        $year = $request->query('year');
+
+        $stats = [
+            'total' => $client->orders()->count(),
+            'pending' => $client->orders()->where('status', 'pending')->count(),
+            'accepted' => $client->orders()->where('status', 'accepted')->count(),
+            'processing' => $client->orders()->where('status', 'processing')->count(),
+            'shipped' => $client->orders()->where('status', 'shipped')->count(),
+            'delivered' => $client->orders()->where('status', 'delivered')->count(),
+            'cancelled' => $client->orders()->where('status', 'cancelled')->count(),
+        ];
+
+        $monthInt = is_numeric($month) ? (int) $month : null;
+        $yearInt = is_numeric($year) ? (int) $year : null;
+        $hasMonthFilter = $monthInt >= 1 && $monthInt <= 12 && $yearInt >= 2000;
+
+        $monthlyTotal = null;
+        $monthlyOrdersCount = null;
+
+        if ($hasMonthFilter) {
+            $monthlyOrdersCount = $client->orders()
+                ->whereYear('created_at', $yearInt)
+                ->whereMonth('created_at', $monthInt)
+                ->count();
+
+            $monthlyTotal = $client->orders()
+                ->whereYear('created_at', $yearInt)
+                ->whereMonth('created_at', $monthInt)
+                ->where('status', '!=', 'cancelled')
+                ->sum('total');
+        }
+
+        $orders = $client->orders()
+            ->when(in_array($status, Order::STATUSES, true), fn ($query) => $query->where('status', $status))
+            ->when($hasMonthFilter, fn ($query) => $query
+                ->whereYear('created_at', $yearInt)
+                ->whereMonth('created_at', $monthInt))
+            ->latest()
+            ->get();
 
         return view('dashboard.clients.show', [
             'activeMenu' => 'clients',
             'client' => $client,
+            'orders' => $orders,
+            'stats' => $stats,
+            'status' => $status,
+            'month' => $hasMonthFilter ? $monthInt : null,
+            'year' => $hasMonthFilter ? $yearInt : null,
+            'monthlyTotal' => $monthlyTotal,
+            'monthlyOrdersCount' => $monthlyOrdersCount,
         ]);
     }
 

@@ -25,7 +25,7 @@
         </form>
 
         <div class="overflow-x-auto">
-            <div class="dashboard-table-head grid min-w-[1100px] grid-cols-12 items-center gap-3 border-b border-outline-variant bg-surface-container-low p-6 text-right text-on-surface-variant">
+            <div class="dashboard-table-head grid min-w-[1180px] grid-cols-12 items-center gap-3 border-b border-outline-variant bg-surface-container-low p-6 text-right text-on-surface-variant">
                 <div class="col-span-2">الاسم</div>
                 <div class="col-span-2">رقم الهاتف</div>
                 <div class="col-span-1">اسم الفرع</div>
@@ -33,10 +33,11 @@
                 <div class="col-span-1">المدينة</div>
                 <div class="col-span-1">المنطقة</div>
                 <div class="col-span-1 text-center">الحالة</div>
-                <div class="col-span-3 text-center">الإجراءات</div>
+                <div class="col-span-1 text-center">إشعار</div>
+                <div class="col-span-2 text-center">الإجراءات</div>
             </div>
 
-            <div class="min-w-[1100px] divide-y divide-outline-variant/70">
+            <div class="min-w-[1180px] divide-y divide-outline-variant/70">
                 @forelse ($clients as $client)
                     <div @class([
                         'grid grid-cols-12 items-center gap-3 p-6 text-right transition-colors hover:bg-surface-container-low/80',
@@ -57,7 +58,19 @@
                                 <span class="inline-block rounded-full bg-surface-variant px-2 py-0.5 text-xs font-medium text-on-surface-variant">غير نشط</span>
                             @endif
                         </div>
-                        <div class="col-span-3 flex justify-center gap-2">
+                        <div class="col-span-1 text-center">
+                            <button
+                                class="rounded p-2 text-primary-container transition-colors hover:bg-primary-container/10"
+                                data-client-id="{{ $client->id }}"
+                                data-client-name="{{ $client->name }}"
+                                data-notification-open
+                                title="إرسال إشعار"
+                                type="button"
+                            >
+                                <span class="material-symbols-outlined">notifications</span>
+                            </button>
+                        </div>
+                        <div class="col-span-2 flex justify-center gap-2">
                             <a class="rounded p-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-primary-container" href="{{ route('admin.clients.show', $client) }}" title="عرض">
                                 <span class="material-symbols-outlined">visibility</span>
                             </a>
@@ -110,6 +123,46 @@
             </div>
         </div>
     </div>
+
+    <div aria-labelledby="client-notification-title" aria-modal="true" class="fixed inset-0 z-[80] hidden items-center justify-center p-4" id="client-notification-modal" role="dialog">
+        <div class="absolute inset-0 bg-black/40" data-notification-dismiss></div>
+        <div class="relative w-full max-w-lg rounded-xl border border-outline-variant bg-surface-container-lowest p-6 shadow-xl">
+            <div class="mb-6 flex items-start justify-between gap-4">
+                <div>
+                    <h2 class="text-lg font-semibold text-on-surface" id="client-notification-title">إرسال إشعار</h2>
+                    <p class="mt-1 text-sm text-on-surface-variant">إرسال إشعار إلى: <span class="font-semibold text-on-surface" id="client-notification-name"></span></p>
+                </div>
+                <button class="rounded p-1 text-on-surface-variant transition-colors hover:bg-surface-container" data-notification-dismiss type="button">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <form action="{{ route('admin.notifications.send.store') }}" class="space-y-4" method="POST">
+                @csrf
+                <input name="target" type="hidden" value="client">
+                <input id="client-notification-id" name="client_id" type="hidden" value="">
+                <input name="return_to" type="hidden" value="clients">
+
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-on-surface" for="client-notification-title-input">عنوان الإشعار</label>
+                    <input class="block w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-4 py-3 text-sm text-on-surface focus:border-primary-container focus:outline-none focus:ring-1 focus:ring-primary-container" id="client-notification-title-input" name="title" placeholder="مثال: عرض خاص" required type="text">
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-on-surface" for="client-notification-message">نص الإشعار</label>
+                    <textarea class="block min-h-28 w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-4 py-3 text-sm text-on-surface focus:border-primary-container focus:outline-none focus:ring-1 focus:ring-primary-container" id="client-notification-message" name="message" placeholder="اكتب رسالة الإشعار..." required></textarea>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 border-t border-outline-variant pt-4">
+                    <button class="rounded-lg border border-outline px-4 py-2.5 text-sm font-semibold text-on-surface transition-colors hover:bg-surface-container" data-notification-dismiss type="button">إلغاء</button>
+                    <button class="flex items-center gap-2 rounded-lg bg-primary-container px-4 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary" type="submit">
+                        <span class="material-symbols-outlined text-[18px]">send</span>
+                        إرسال
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -134,6 +187,44 @@
             document.querySelectorAll('[data-status-dropdown]').forEach(function (dropdown) {
                 dropdown.classList.add('hidden');
             });
+        });
+
+        const modal = document.getElementById('client-notification-modal');
+        const clientIdInput = document.getElementById('client-notification-id');
+        const clientNameLabel = document.getElementById('client-notification-name');
+        const titleInput = document.getElementById('client-notification-title-input');
+        const messageInput = document.getElementById('client-notification-message');
+
+        function openNotificationModal(clientId, clientName) {
+            clientIdInput.value = clientId;
+            clientNameLabel.textContent = clientName;
+            titleInput.value = '';
+            messageInput.value = '';
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            titleInput.focus();
+        }
+
+        function closeNotificationModal() {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        document.querySelectorAll('[data-notification-open]').forEach(function (button) {
+            button.addEventListener('click', function (event) {
+                event.stopPropagation();
+                openNotificationModal(button.dataset.clientId, button.dataset.clientName);
+            });
+        });
+
+        modal.querySelectorAll('[data-notification-dismiss]').forEach(function (element) {
+            element.addEventListener('click', closeNotificationModal);
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
+                closeNotificationModal();
+            }
         });
     })();
 </script>

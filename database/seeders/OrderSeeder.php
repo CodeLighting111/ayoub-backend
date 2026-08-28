@@ -79,19 +79,96 @@ class OrderSeeder extends Seeder
                 'created_at' => now()->subDays(6),
                 'cancelled_at' => now()->subDays(5),
             ],
+            [
+                'order_number' => 'ORD-2026-DEMO-007',
+                'status' => 'delivered',
+                'payment_method' => 'cash',
+                'payment_status' => 'paid',
+                'notes' => '[تجريبي] طلب يوليو — تم التوصيل',
+                'created_at' => now()->setDate(2026, 7, 5)->setTime(11, 30),
+                'delivered_at' => now()->setDate(2026, 7, 6)->setTime(14, 0),
+                'quantities' => [2, 1],
+            ],
+            [
+                'order_number' => 'ORD-2026-DEMO-008',
+                'status' => 'delivered',
+                'payment_method' => 'wallet',
+                'payment_status' => 'paid',
+                'notes' => '[تجريبي] طلب يوليو — تم التوصيل',
+                'created_at' => now()->setDate(2026, 7, 18)->setTime(9, 15),
+                'delivered_at' => now()->setDate(2026, 7, 19)->setTime(16, 30),
+                'quantities' => [3, 2],
+            ],
+            [
+                'order_number' => 'ORD-2026-DEMO-009',
+                'status' => 'cancelled',
+                'payment_method' => 'cash',
+                'payment_status' => 'unpaid',
+                'notes' => '[تجريبي] طلب يوليو — ملغى',
+                'created_at' => now()->setDate(2026, 7, 25)->setTime(18, 45),
+                'cancelled_at' => now()->setDate(2026, 7, 26)->setTime(10, 0),
+                'quantities' => [1, 1],
+            ],
+            [
+                'order_number' => 'ORD-2026-DEMO-010',
+                'status' => 'delivered',
+                'payment_method' => 'bank_transfer',
+                'payment_status' => 'paid',
+                'notes' => '[تجريبي] طلب يونيو — تم التوصيل',
+                'created_at' => now()->setDate(2026, 6, 10)->setTime(13, 20),
+                'delivered_at' => now()->setDate(2026, 6, 11)->setTime(11, 0),
+                'quantities' => [4, 1],
+            ],
+            [
+                'order_number' => 'ORD-2026-DEMO-011',
+                'status' => 'delivered',
+                'payment_method' => 'cash',
+                'payment_status' => 'paid',
+                'notes' => '[تجريبي] طلب يونيو — تم التوصيل',
+                'created_at' => now()->setDate(2026, 6, 22)->setTime(8, 0),
+                'delivered_at' => now()->setDate(2026, 6, 23)->setTime(15, 45),
+                'quantities' => [2, 3],
+            ],
+            [
+                'order_number' => 'ORD-2026-DEMO-012',
+                'status' => 'delivered',
+                'payment_method' => 'wallet',
+                'payment_status' => 'paid',
+                'notes' => '[تجريبي] طلب مايو — تم التوصيل',
+                'created_at' => now()->setDate(2026, 5, 14)->setTime(16, 10),
+                'delivered_at' => now()->setDate(2026, 5, 15)->setTime(12, 30),
+                'quantities' => [5, 2],
+            ],
+            [
+                'order_number' => 'ORD-2026-DEMO-013',
+                'status' => 'delivered',
+                'payment_method' => 'cash',
+                'payment_status' => 'paid',
+                'notes' => '[تجريبي] طلب أغسطس إضافي — تم التوصيل',
+                'created_at' => now()->setDate(2026, 8, 10)->setTime(10, 0),
+                'delivered_at' => now()->setDate(2026, 8, 11)->setTime(13, 0),
+                'quantities' => [2, 2],
+            ],
+            [
+                'order_number' => 'ORD-2026-DEMO-014',
+                'status' => 'shipped',
+                'payment_method' => 'cash',
+                'payment_status' => 'unpaid',
+                'notes' => '[تجريبي] طلب أغسطس — تم الشحن',
+                'created_at' => now()->setDate(2026, 8, 15)->setTime(14, 30),
+                'quantities' => [1, 2],
+            ],
         ];
 
         foreach ($demoOrders as $index => $demo) {
-            $lineProducts = $products->slice($index % max(1, $products->count() - 1), 2)->values();
-            if ($lineProducts->isEmpty()) {
-                $lineProducts = $products->take(1);
-            }
+            $quantities = $demo['quantities'] ?? [($index % 2) + 1, 1];
+            $lineProducts = collect([$products[0], $products[1] ?? $products[0]]);
 
             $subtotal = 0.0;
             $lineItems = [];
 
             foreach ($lineProducts as $position => $product) {
-                $quantity = $position + 1;
+                $quantity = $quantities[$position] ?? ($position + 1);
                 $unitPrice = (float) ($product->discount_price ?? $product->price);
                 $lineTotal = round($unitPrice * $quantity, 2);
                 $subtotal += $lineTotal;
@@ -152,6 +229,6 @@ class OrderSeeder extends Seeder
             }
         }
 
-        $this->command?->info('Created/updated '.count($demoOrders).' demo orders (one per status).');
+        $this->command?->info('Created/updated '.count($demoOrders).' demo orders for client «'.$client->name.'».');
     }
 }

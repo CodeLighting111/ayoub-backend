@@ -123,6 +123,57 @@ class AdminNotificationTest extends TestCase
         ]);
     }
 
+    public function test_new_complaint_creates_notification(): void
+    {
+        $client = $this->createClientWithProduct();
+
+        $this->postJson('/api/complaints', [
+            'client_id' => $client['client']->id,
+            'subject' => 'تأخر التوصيل',
+            'message' => 'الطلب تأخر عن الموعد المحدد.',
+        ])->assertCreated();
+
+        $this->assertDatabaseHas('admin_notifications', [
+            'type' => AdminNotification::TYPE_NEW_COMPLAINT,
+        ]);
+    }
+
+    public function test_low_stock_notification_is_created_when_stock_reaches_threshold(): void
+    {
+        $client = $this->createClientWithProduct(stock: 11);
+
+        $this->postJson('/api/orders', [
+            'client_id' => $client['client']->id,
+            'payment_method' => 'cash',
+            'items' => [
+                ['product_id' => $client['product']->id, 'quantity' => 1],
+            ],
+        ])->assertCreated();
+
+        $this->assertDatabaseHas('admin_notifications', [
+            'product_id' => $client['product']->id,
+            'type' => AdminNotification::TYPE_LOW_STOCK,
+        ]);
+    }
+
+    public function test_low_stock_notification_is_not_repeated_while_already_low(): void
+    {
+        $client = $this->createClientWithProduct(stock: 11);
+
+        $this->postJson('/api/orders', [
+            'client_id' => $client['client']->id,
+            'payment_method' => 'cash',
+            'items' => [
+                ['product_id' => $client['product']->id, 'quantity' => 2],
+            ],
+        ])->assertCreated();
+
+        $this->assertSame(
+            1,
+            AdminNotification::query()->where('type', AdminNotification::TYPE_LOW_STOCK)->count(),
+        );
+    }
+
     private function createAdmin(): Admin
     {
         return Admin::query()->create([
@@ -154,7 +205,7 @@ class AdminNotificationTest extends TestCase
     }
 
     /** @return array{client: Client, product: Product} */
-    private function createClientWithProduct(): array
+    private function createClientWithProduct(int $stock = 10): array
     {
         $category = ClientCategory::query()->create(['title' => 'سوبر ماركت']);
         $governorate = Governorate::query()->create(['name' => 'القاهرة']);
@@ -186,7 +237,7 @@ class AdminNotificationTest extends TestCase
             'sub_product_category_id' => $subCategory->id,
             'name' => 'منتج تجريبي',
             'price' => 50,
-            'stock' => 10,
+            'stock' => $stock,
             'status' => 'active',
             'unit_label' => 'قطعة',
         ]);

@@ -74,7 +74,7 @@ class RolePermissionManagementTest extends TestCase
                 'role_id' => $role->id,
                 'password' => 'password123',
             ])
-            ->assertRedirect(route('admin.admins.create'));
+            ->assertRedirect(route('admin.admins.index'));
 
         $this->assertDatabaseHas('admins', [
             'email' => 'supervisor@example.com',

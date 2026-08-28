@@ -31,7 +31,14 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('dashboard.partials.header', function ($view) {
             if (auth('admin')->check()) {
-                $view->with('unreadNotificationsCount', app(AdminNotificationService::class)->unreadCount());
+                $notificationService = app(AdminNotificationService::class);
+                $view->with('unreadNotificationsCount', $notificationService->unreadCount());
+            }
+        });
+
+        View::composer('dashboard.partials.sidebar', function ($view) {
+            if (auth('admin')->check()) {
+                $view->with('sidebarBadges', app(AdminNotificationService::class)->sidebarBadgeCounts());
             }
         });
     }
