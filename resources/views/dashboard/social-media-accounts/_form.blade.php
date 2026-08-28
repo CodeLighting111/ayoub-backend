@@ -61,6 +61,7 @@
                 id="sort_order"
                 min="1"
                 name="sort_order"
+                placeholder="1"
                 type="number"
                 value="{{ old('sort_order', $account->sort_order ?? 1) }}"
             >

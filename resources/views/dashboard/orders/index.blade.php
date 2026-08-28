@@ -5,10 +5,10 @@
 @section('breadcrumb', 'الطلبات')
 
 @section('content')
-    <div class="mb-8">
-        <h1 class="dashboard-page-title mb-2 text-on-surface">الطلبات</h1>
-        <p class="dashboard-page-subtitle text-on-surface-variant">متابعة وإدارة طلبات العملاء وحالاتها.</p>
-    </div>
+    @include('dashboard.partials.page-header', [
+        'title' => 'الطلبات',
+        'subtitle' => 'متابعة وإدارة طلبات العملاء وحالاتها.',
+    ])
 
     <div class="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-7">
         @foreach ([

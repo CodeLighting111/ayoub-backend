@@ -78,6 +78,11 @@
         select.dashboard-select-plain::-ms-expand {
             display: none;
         }
+        input::placeholder,
+        textarea::placeholder {
+            color: #79747e;
+            opacity: 1;
+        }
     </style>
     @stack('head')
 </head>

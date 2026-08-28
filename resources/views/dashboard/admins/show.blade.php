@@ -19,10 +19,7 @@
             <p class="dashboard-page-subtitle text-on-surface-variant">تفاصيل حساب المشرف في النظام.</p>
         </div>
         <div class="flex items-center gap-3">
-            <a class="flex items-center gap-2 rounded-lg border border-outline px-4 py-2.5 text-sm font-semibold text-on-surface transition-colors hover:bg-surface-container" href="{{ route('admin.admins.index') }}">
-                <span class="material-symbols-outlined text-[18px]">arrow_back</span>
-                رجوع
-            </a>
+            @include('dashboard.partials.back-button')
             @unless ($admin->isPrimarySuperAdmin() || $admin->id === auth('admin')->id())
                 <form action="{{ route('admin.admins.destroy', $admin) }}" data-confirm="هل أنت متأكد من حذف مشرف «{{ $admin->name }}»؟" data-confirm-title="تأكيد الحذف" method="POST">
                     @csrf

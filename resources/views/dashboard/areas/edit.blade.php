@@ -5,10 +5,10 @@
 @section('breadcrumb', 'المناطق / تعديل')
 
 @section('content')
-    <div class="mb-8">
-        <h1 class="dashboard-page-title mb-2 text-on-surface">تعديل المنطقة</h1>
-        <p class="dashboard-page-subtitle text-on-surface-variant">حدّث المدينة واسم المنطقة.</p>
-    </div>
+    @include('dashboard.partials.page-header', [
+        'title' => 'تعديل المنطقة',
+        'subtitle' => 'حدّث المدينة واسم المنطقة.',
+    ])
 
     @include('dashboard.areas._form', [
         'action' => route('admin.areas.update', $area),

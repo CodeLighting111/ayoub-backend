@@ -158,6 +158,7 @@
                     id="pieces"
                     min="1"
                     name="pieces"
+                    placeholder="1"
                     required
                     type="number"
                     value="{{ old('pieces', $product->pieces ?? 1) }}"
@@ -177,6 +178,7 @@
                     id="stock"
                     min="0"
                     name="stock"
+                    placeholder="0"
                     required
                     type="number"
                     value="{{ old('stock', $product->stock ?? 0) }}"

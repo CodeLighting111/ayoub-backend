@@ -51,6 +51,7 @@
                             ])
                             id="app_title"
                             name="app_title"
+                            placeholder="مثال: كشكول جملة"
                             required
                             type="text"
                             value="{{ old('app_title', $settings->app_title) }}"
@@ -97,6 +98,7 @@
                             id="delivery_fee"
                             min="0"
                             name="delivery_fee"
+                            placeholder="30.00"
                             required
                             step="0.01"
                             type="number"
@@ -117,6 +119,7 @@
                             id="min_order_amount"
                             min="0"
                             name="min_order_amount"
+                            placeholder="100.00"
                             required
                             step="0.01"
                             type="number"

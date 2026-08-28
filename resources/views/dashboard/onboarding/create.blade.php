@@ -5,10 +5,10 @@
 @section('breadcrumb', 'الصفحات الابتدائية / إضافة')
 
 @section('content')
-    <div class="mb-8">
-        <h1 class="dashboard-page-title mb-2 text-on-surface">إضافة شاشة ترحيب جديدة</h1>
-        <p class="dashboard-page-subtitle text-on-surface-variant">قم بإنشاء وتكوين شاشة ترحيب جديدة لتظهر للمستخدمين الجدد.</p>
-    </div>
+    @include('dashboard.partials.page-header', [
+        'title' => 'إضافة شاشة ترحيب جديدة',
+        'subtitle' => 'قم بإنشاء وتكوين شاشة ترحيب جديدة لتظهر للمستخدمين الجدد.',
+    ])
 
     @include('dashboard.onboarding._form', [
         'action' => route('admin.onboarding.store'),

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\GeneralSetting;
 use App\Services\AdminNotificationService;
+use App\Support\DashboardBackUrl;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -23,9 +24,15 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::composer('dashboard.*', function ($view) {
+            $route = request()->route();
+
             $view->with([
                 'platformName' => GeneralSetting::platformName(),
                 'platformLogoUrl' => GeneralSetting::platformLogoUrl(),
+                'pageBackUrl' => DashboardBackUrl::resolve(
+                    $route?->getName(),
+                    $route?->parameters() ?? [],
+                ),
             ]);
         });
 

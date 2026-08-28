@@ -5,10 +5,10 @@
 @section('breadcrumb', 'المشرفين / إضافة')
 
 @section('content')
-    <div class="mb-8">
-        <h1 class="dashboard-page-title mb-2 text-on-surface">إضافة مشرف</h1>
-        <p class="dashboard-page-subtitle text-on-surface-variant">إنشاء حساب مشرف جديد وربطه بدور محدد.</p>
-    </div>
+    @include('dashboard.partials.page-header', [
+        'title' => 'إضافة مشرف',
+        'subtitle' => 'إنشاء حساب مشرف جديد وربطه بدور محدد.',
+    ])
 
     <div class="dashboard-card w-full rounded-xl border border-outline-variant bg-surface-container-lowest p-6">
         <form action="{{ route('admin.admins.store') }}" class="space-y-6" method="POST">
@@ -24,6 +24,7 @@
                         ])
                         id="name"
                         name="name"
+                        placeholder="أدخل اسم المشرف"
                         required
                         type="text"
                         value="{{ old('name') }}"
@@ -42,6 +43,8 @@
                         ])
                         id="email"
                         name="email"
+                        dir="ltr"
+                        placeholder="example@email.com"
                         required
                         type="email"
                         value="{{ old('email') }}"
@@ -60,6 +63,8 @@
                         ])
                         id="phone"
                         name="phone"
+                        dir="ltr"
+                        placeholder="01xxxxxxxxx"
                         type="text"
                         value="{{ old('phone') }}"
                     >
@@ -98,6 +103,7 @@
                         ])
                         id="password"
                         name="password"
+                        placeholder="••••••••"
                         required
                         type="password"
                     >
@@ -112,9 +118,6 @@
                 <button class="rounded-lg bg-primary-container px-8 py-3 text-sm font-semibold text-on-primary shadow-sm transition-colors hover:bg-primary" type="submit">
                     إضافة المشرف
                 </button>
-                <a class="rounded-lg border border-outline-variant px-6 py-3 text-sm font-semibold text-primary transition-colors hover:bg-surface-container" href="{{ route('admin.admins.index') }}">
-                    رجوع للقائمة
-                </a>
             </div>
         </form>
     </div>

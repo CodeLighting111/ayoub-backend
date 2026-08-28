@@ -14,9 +14,7 @@
                 {{ $order->expected_delivery_at ? $order->expected_delivery_at->format('Y-m-d H:i') : '—' }}
             </p>
         </div>
-        <a class="rounded-lg px-6 py-2.5 text-sm font-semibold text-on-surface-variant transition-colors hover:bg-surface-container" href="{{ route('admin.orders.index') }}">
-            العودة للقائمة
-        </a>
+        @include('dashboard.partials.back-button')
     </div>
 
     <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
@@ -87,6 +85,7 @@
                                 class="block w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-4 py-3 text-sm text-on-surface"
                                 id="expected_delivery_at"
                                 name="expected_delivery_at"
+                                placeholder="YYYY-MM-DD HH:MM"
                                 type="datetime-local"
                                 value="{{ old('expected_delivery_at', optional($order->expected_delivery_at)?->format('Y-m-d\TH:i')) }}"
                             >

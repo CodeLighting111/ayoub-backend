@@ -14,6 +14,7 @@
                 ])
                 id="name"
                 name="name"
+                placeholder="مثال: مشرف طلبات"
                 required
                 type="text"
                 value="{{ old('name', $role->name) }}"

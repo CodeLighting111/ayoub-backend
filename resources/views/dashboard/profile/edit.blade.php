@@ -47,6 +47,7 @@
                                 ])
                                 id="name"
                                 name="name"
+                                placeholder="أدخل اسمك الكامل"
                                 required
                                 type="text"
                                 value="{{ old('name', $admin->name) }}"
@@ -65,6 +66,7 @@
                                 ])
                                 id="phone"
                                 name="phone"
+                                placeholder="01xxxxxxxxx"
                                 type="text"
                                 value="{{ old('phone', $admin->phone) }}"
                             >
@@ -82,6 +84,7 @@
                                 ])
                                 id="email"
                                 name="email"
+                                placeholder="example@email.com"
                                 required
                                 type="email"
                                 value="{{ old('email', $admin->email) }}"
@@ -110,6 +113,7 @@
                             ])
                             id="current_password"
                             name="current_password"
+                            placeholder="••••••••"
                             type="password"
                         >
                         @error('current_password')
@@ -126,6 +130,7 @@
                             ])
                             id="password"
                             name="password"
+                            placeholder="••••••••"
                             type="password"
                         >
                         <p class="mt-1 text-xs text-on-surface-variant">يجب أن تحتوي على 8 أحرف على الأقل، وحرف كبير، ورقم.</p>
@@ -140,6 +145,7 @@
                             class="block w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-4 py-3 text-sm text-on-surface shadow-sm focus:border-primary-container focus:outline-none focus:ring-1 focus:ring-primary-container"
                             id="password_confirmation"
                             name="password_confirmation"
+                            placeholder="••••••••"
                             type="password"
                         >
                     </div>

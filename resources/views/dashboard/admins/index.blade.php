@@ -1,18 +1,18 @@
 @extends('dashboard.layouts.app')
 
-@section('title', 'المشرfين')
+@section('title', 'المشرفين')
 
-@section('breadcrumb', 'المشرfين')
+@section('breadcrumb', 'المشرفين')
 
 @section('content')
     <div class="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
         <div>
-            <h1 class="dashboard-page-title mb-2 text-on-surface">المشرfين</h1>
-            <p class="dashboard-page-subtitle text-on-surface-variant">قائمة بحسابات المشرfين وأدوارهم في النظام.</p>
+            <h1 class="dashboard-page-title mb-2 text-on-surface">المشرفين</h1>
+            <p class="dashboard-page-subtitle text-on-surface-variant">قائمة بحسابات المشرفين وأدوارهم في النظام.</p>
         </div>
         <a class="flex items-center gap-2 rounded-lg bg-primary-container px-6 py-2.5 text-sm font-semibold text-on-primary shadow-sm transition-colors hover:bg-primary" href="{{ route('admin.admins.create') }}">
             <span class="material-symbols-outlined text-[20px]">add</span>
-            إضافة مشرf
+            إضافة مشرف
         </a>
     </div>
 
@@ -26,7 +26,7 @@
 
         <div class="dashboard-table-head grid grid-cols-12 items-center gap-4 border-b border-outline-variant bg-surface-container-low p-6 text-right text-on-surface-variant">
             <div class="col-span-1 text-center">#</div>
-            <div class="col-span-2">اسم المشرf</div>
+            <div class="col-span-2">اسم المشرف</div>
             <div class="col-span-2">البريد الإلكتروني</div>
             <div class="col-span-2">رقم الهاتف</div>
             <div class="col-span-2">الدور</div>
@@ -101,7 +101,7 @@
                                     @endif
                                 </div>
                             </div>
-                            <form action="{{ route('admin.admins.destroy', $admin) }}" data-confirm="هل أنت متأكد من حذف مشرf «{{ $admin->name }}»؟" data-confirm-title="تأكيد الحذف" method="POST">
+                            <form action="{{ route('admin.admins.destroy', $admin) }}" data-confirm="هل أنت متأكد من حذف مشرف «{{ $admin->name }}»؟" data-confirm-title="تأكيد الحذف" method="POST">
                                 @csrf
                                 @method('DELETE')
                                 <button class="rounded p-2 text-error transition-colors hover:bg-error-container/30" title="حذف" type="submit">
@@ -113,7 +113,7 @@
                 </div>
             @empty
                 <div class="p-12 text-center text-sm text-on-surface-variant">
-                    {{ $search !== '' ? 'لا توجد نتائج مطابقة.' : 'لا يوجد مشرfون حتى الآن.' }}
+                    {{ $search !== '' ? 'لا توجد نتائج مطابقة.' : 'لا يوجد مشرفون حتى الآن.' }}
                 </div>
             @endforelse
         </div>

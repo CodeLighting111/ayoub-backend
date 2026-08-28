@@ -5,16 +5,10 @@
 @section('breadcrumb', 'الإشعارات / إرسال')
 
 @section('content')
-    <div class="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
-        <div>
-            <h1 class="dashboard-page-title mb-2 text-on-surface">إرسال إشعار للعملاء</h1>
-            <p class="dashboard-page-subtitle text-on-surface-variant">أرسل إشعاراً لجميع مستخدمي التطبيق أو لعميل محدد.</p>
-        </div>
-        <a class="flex items-center gap-2 rounded-lg border border-outline px-4 py-2.5 text-sm font-semibold text-on-surface transition-colors hover:bg-surface-container" href="{{ route('admin.notifications.index') }}">
-            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
-            رجوع
-        </a>
-    </div>
+    @include('dashboard.partials.page-header', [
+        'title' => 'إرسال إشعار للعملاء',
+        'subtitle' => 'أرسل إشعاراً لجميع مستخدمي التطبيق أو لعميل محدد.',
+    ])
 
     <div class="dashboard-card w-full rounded-xl border border-outline-variant bg-surface-container-lowest p-6">
         <form action="{{ route('admin.notifications.send.store') }}" class="space-y-6" method="POST">

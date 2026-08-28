@@ -5,10 +5,10 @@
 @section('breadcrumb', 'حسابات السوشيال ميديا / تعديل')
 
 @section('content')
-    <div class="mb-8">
-        <h1 class="dashboard-page-title mb-2 text-on-surface">تعديل حساب سوشيال ميديا</h1>
-        <p class="dashboard-page-subtitle text-on-surface-variant">تحديث بيانات حساب «{{ $account->name }}».</p>
-    </div>
+    @include('dashboard.partials.page-header', [
+        'title' => 'تعديل حساب سوشيال ميديا',
+        'subtitle' => 'تحديث بيانات حساب «'.$account->name.'».',
+    ])
 
     @include('dashboard.social-media-accounts._form', [
         'action' => route('admin.social-media-accounts.update', $account),

@@ -80,7 +80,7 @@
                                 class="block w-full pr-12 pl-4 py-4 text-base lg:text-lg border border-outline-variant rounded-xl bg-surface-container-lowest text-on-surface focus:outline-none focus:ring-2 focus:ring-primary-container focus:border-primary-container transition-all duration-200 placeholder-outline @error('email') border-red-500 @enderror"
                                 id="email"
                                 name="email"
-                                placeholder="ayoub@gmail.com"
+                                placeholder="example@email.com"
                                 required
                                 type="email"
                                 value="{{ old('email') }}"

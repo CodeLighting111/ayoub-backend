@@ -12,9 +12,7 @@
         </div>
         <div class="flex items-center gap-3">
             @include('dashboard.complaints.partials.status-badge', ['complaint' => $complaint])
-            <a class="rounded-lg px-6 py-2.5 text-sm font-semibold text-on-surface-variant transition-colors hover:bg-surface-container" href="{{ route('admin.complaints.index') }}">
-                العودة للقائمة
-            </a>
+            @include('dashboard.partials.back-button')
         </div>
     </div>
 
