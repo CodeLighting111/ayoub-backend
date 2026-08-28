@@ -76,6 +76,26 @@
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
+
+                    <div>
+                        <label class="mb-2 block text-sm font-semibold text-on-surface" for="hotline_phone">الخط الساخن</label>
+                        <input
+                            @class([
+                                'block w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-4 py-3 text-sm text-on-surface shadow-sm focus:border-primary-container focus:outline-none focus:ring-1 focus:ring-primary-container',
+                                'border-red-500' => $errors->has('hotline_phone'),
+                            ])
+                            dir="ltr"
+                            id="hotline_phone"
+                            inputmode="tel"
+                            name="hotline_phone"
+                            placeholder="01000000000"
+                            type="text"
+                            value="{{ old('hotline_phone', $settings->hotline_phone) }}"
+                        >
+                        @error('hotline_phone')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
             </div>
         </div>

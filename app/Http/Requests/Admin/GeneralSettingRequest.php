@@ -16,6 +16,7 @@ class GeneralSettingRequest extends FormRequest
         return [
             'app_title' => ['required', 'string', 'max:255'],
             'app_description' => ['nullable', 'string'],
+            'hotline_phone' => ['nullable', 'string', 'max:20'],
             'logo' => ['nullable', 'image', 'max:10240'],
             'delivery_fee' => ['required', 'numeric', 'min:0'],
             'min_order_amount' => ['required', 'numeric', 'min:0'],
@@ -26,6 +27,7 @@ class GeneralSettingRequest extends FormRequest
     {
         return [
             'app_title.required' => 'اسم المنصة مطلوب.',
+            'hotline_phone.max' => 'رقم الخط الساخن يجب ألا يتجاوز 20 رقماً.',
             'delivery_fee.required' => 'رسوم التوصيل مطلوبة.',
             'delivery_fee.min' => 'رسوم التوصيل يجب أن تكون 0 أو أكثر.',
             'min_order_amount.required' => 'الحد الأدنى لقيمة الطلب مطلوب.',

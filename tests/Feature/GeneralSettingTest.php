@@ -42,6 +42,7 @@ class GeneralSettingTest extends TestCase
             ->put(route('admin.settings.update'), [
                 'app_title' => 'سوقنا المحدّث',
                 'app_description' => 'وصف جديد',
+                'hotline_phone' => '01012345678',
                 'delivery_fee' => 45,
                 'min_order_amount' => 100,
             ])
@@ -50,6 +51,7 @@ class GeneralSettingTest extends TestCase
 
         $this->assertDatabaseHas('general_settings', [
             'app_title' => 'سوقنا المحدّث',
+            'hotline_phone' => '01012345678',
             'delivery_fee' => 45,
             'min_order_amount' => 100,
         ]);

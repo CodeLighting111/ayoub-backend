@@ -10,6 +10,7 @@ class GeneralSetting extends Model
     protected $fillable = [
         'app_title',
         'app_description',
+        'hotline_phone',
         'logo_url',
         'delivery_fee',
         'min_order_amount',
