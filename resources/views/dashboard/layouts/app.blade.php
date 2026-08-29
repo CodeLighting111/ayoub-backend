@@ -106,6 +106,7 @@
     @include('dashboard.partials.confirm-dialog')
     @include('dashboard.partials.list-search')
     @include('dashboard.partials.image-upload-preview')
+    @include('dashboard.partials.form-validation-ar')
     @stack('scripts')
 </body>
 </html>

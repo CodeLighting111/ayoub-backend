@@ -101,7 +101,7 @@ class OrderService
         });
     }
 
-    public function updateStatus(Order $order, string $status, ?string $expectedDeliveryAt = null): Order
+    public function updateStatus(Order $order, string $status, ?string $expectedDeliveryAt = null, ?string $cancellationReason = null): Order
     {
         if (! in_array($status, Order::STATUSES, true)) {
             throw ValidationException::withMessages([
@@ -121,7 +121,7 @@ class OrderService
             ]);
         }
 
-        return DB::transaction(function () use ($order, $status, $expectedDeliveryAt) {
+        return DB::transaction(function () use ($order, $status, $expectedDeliveryAt, $cancellationReason) {
             if ($status === 'cancelled' && $order->status !== 'cancelled') {
                 $this->restoreStock($order);
                 $order->cancelled_at = now();
@@ -136,8 +136,113 @@ class OrderService
                 $order->expected_delivery_at = $expectedDeliveryAt;
             }
 
+            if ($status === 'cancelled' && filled($cancellationReason)) {
+                $order->cancellation_reason = $cancellationReason;
+            }
+
             $order->status = $status;
             $order->save();
+
+            return $order->fresh(['items.product', 'client']);
+        });
+    }
+
+    public function updateCancellationReason(Order $order, ?string $cancellationReason): Order
+    {
+        if ($order->status !== 'cancelled') {
+            throw ValidationException::withMessages([
+                'cancellation_reason' => 'يمكن إضافة سبب الإلغاء للطلبات الملغاة فقط.',
+            ]);
+        }
+
+        $order->update([
+            'cancellation_reason' => $cancellationReason,
+        ]);
+
+        return $order->fresh(['items.product', 'client']);
+    }
+
+    /** @param array<int|string, int> $quantities */
+    public function updateItemQuantities(Order $order, array $quantities): Order
+    {
+        if (in_array($order->status, ['delivered', 'cancelled'], true)) {
+            throw ValidationException::withMessages([
+                'quantities' => 'لا يمكن تعديل كميات منتجات طلب منتهٍ أو ملغى.',
+            ]);
+        }
+
+        return DB::transaction(function () use ($order, $quantities) {
+            $order->load('items');
+
+            if ($order->items->isEmpty()) {
+                throw ValidationException::withMessages([
+                    'quantities' => 'لا توجد منتجات في هذا الطلب.',
+                ]);
+            }
+
+            if (count($quantities) !== $order->items->count()) {
+                throw ValidationException::withMessages([
+                    'quantities' => 'يجب تحديد كمية لكل منتج في الطلب.',
+                ]);
+            }
+
+            $subtotal = 0.0;
+
+            foreach ($order->items as $item) {
+                if (! array_key_exists($item->id, $quantities) && ! array_key_exists((string) $item->id, $quantities)) {
+                    throw ValidationException::withMessages([
+                        'quantities' => 'بيانات كميات المنتجات غير مكتملة.',
+                    ]);
+                }
+
+                $newQuantity = (int) ($quantities[$item->id] ?? $quantities[(string) $item->id]);
+                $oldQuantity = (int) $item->quantity;
+
+                if ($newQuantity === $oldQuantity) {
+                    $subtotal += (float) $item->line_total;
+
+                    continue;
+                }
+
+                $product = Product::query()->lockForUpdate()->find($item->product_id);
+
+                if ($product === null) {
+                    throw ValidationException::withMessages([
+                        'quantities' => 'المنتج «'.$item->product_name.'» لم يعد متوفراً.',
+                    ]);
+                }
+
+                $quantityDiff = $newQuantity - $oldQuantity;
+
+                if ($quantityDiff > 0 && $product->stock < $quantityDiff) {
+                    throw ValidationException::withMessages([
+                        'quantities' => 'المنتج «'.$item->product_name.'» غير متوفر بالكمية المطلوبة. المتوفر: '.$product->stock.'.',
+                    ]);
+                }
+
+                if ($quantityDiff > 0) {
+                    $previousStock = $product->stock;
+                    $product->decrement('stock', $quantityDiff);
+                    $product->refresh();
+                    $this->notificationService->maybeNotifyLowStock($product, $previousStock);
+                } elseif ($quantityDiff < 0) {
+                    $product->increment('stock', abs($quantityDiff));
+                }
+
+                $lineTotal = round((float) $item->unit_price * $newQuantity, 2);
+
+                $item->update([
+                    'quantity' => $newQuantity,
+                    'line_total' => $lineTotal,
+                ]);
+
+                $subtotal += $lineTotal;
+            }
+
+            $order->update([
+                'subtotal' => $subtotal,
+                'total' => round($subtotal + (float) $order->delivery_fee, 2),
+            ]);
 
             return $order->fresh(['items.product', 'client']);
         });

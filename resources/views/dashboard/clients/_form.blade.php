@@ -236,8 +236,8 @@
             @enderror
         </div>
 
-        <div class="space-y-2">
-            <label class="block text-sm font-semibold text-on-surface">اللوكيشن على الخريطة</label>
+        <div class="space-y-4">
+            <label class="block text-sm font-semibold text-on-surface">الموقع على الخريطة</label>
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div class="space-y-2">
                     <label class="text-xs text-on-surface-variant" for="latitude">خط العرض</label>
@@ -245,7 +245,7 @@
                         class="block w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-4 py-3 text-sm text-on-surface shadow-sm focus:border-primary-container focus:outline-none focus:ring-1 focus:ring-primary-container"
                         id="latitude"
                         name="latitude"
-                        placeholder="31.9539"
+                        placeholder="30.0444"
                         step="any"
                         type="number"
                         value="{{ old('latitude', $client->latitude) }}"
@@ -257,17 +257,21 @@
                         class="block w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-4 py-3 text-sm text-on-surface shadow-sm focus:border-primary-container focus:outline-none focus:ring-1 focus:ring-primary-container"
                         id="longitude"
                         name="longitude"
-                        placeholder="35.9106"
+                        placeholder="31.2356"
                         step="any"
                         type="number"
                         value="{{ old('longitude', $client->longitude) }}"
                     >
                 </div>
             </div>
-            <button class="mt-2 inline-flex items-center gap-2 rounded-lg border border-outline-variant bg-surface-container-lowest px-4 py-2 text-sm font-medium text-primary-container transition-colors hover:bg-surface-container" id="locate-me" type="button">
+            <button class="inline-flex items-center gap-2 rounded-lg border border-outline-variant bg-surface-container-lowest px-4 py-2 text-sm font-medium text-primary-container transition-colors hover:bg-surface-container" id="locate-me" type="button">
                 <span class="material-symbols-outlined text-[18px]">my_location</span>
                 تحديد موقعي الحالي
             </button>
+            <div class="overflow-hidden rounded-xl border border-outline-variant">
+                <div class="h-80 w-full bg-surface-container" id="client-location-map"></div>
+            </div>
+            <p class="text-xs text-on-surface-variant">اضغط على الخريطة أو اسحب الدبوس لتحديد موقع العميل.</p>
             @error('latitude')
                 <p class="text-sm text-red-600">{{ $message }}</p>
             @enderror
@@ -291,6 +295,8 @@
 </div>
 
 @push('scripts')
+<link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" rel="stylesheet">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
     (function () {
         const cities = @json($cities);
@@ -298,6 +304,8 @@
         const selectedCityId = @json((int) old('city_id', $client->city_id));
         const selectedAreaId = @json((int) old('area_id', $client->area_id));
         const selectedGovernorateId = @json((int) old('governorate_id', $client->governorate_id));
+        const defaultLat = 30.0444;
+        const defaultLng = 31.2357;
 
         const governorateSelect = document.getElementById('governorate_id');
         const citySelect = document.getElementById('city_id');
@@ -305,6 +313,7 @@
         const locateButton = document.getElementById('locate-me');
         const latitudeInput = document.getElementById('latitude');
         const longitudeInput = document.getElementById('longitude');
+        const mapElement = document.getElementById('client-location-map');
 
         function fillSelect(select, items, selectedId, placeholder) {
             select.innerHTML = '';
@@ -358,18 +367,95 @@
             refreshCities();
         }
 
+        let map = null;
+        let marker = null;
+
+        function parseCoordinate(value, fallback) {
+            const parsed = parseFloat(value);
+            return Number.isFinite(parsed) ? parsed : fallback;
+        }
+
+        function updateInputs(lat, lng) {
+            latitudeInput.value = lat.toFixed(7);
+            longitudeInput.value = lng.toFixed(7);
+        }
+
+        function setMarkerPosition(lat, lng, shouldMoveMap) {
+            if (! marker || ! map) {
+                return;
+            }
+
+            marker.setLatLng([lat, lng]);
+
+            if (shouldMoveMap) {
+                map.setView([lat, lng], map.getZoom());
+            }
+        }
+
+        function initMap() {
+            if (! mapElement || typeof L === 'undefined') {
+                return;
+            }
+
+            const initialLat = parseCoordinate(latitudeInput.value, defaultLat);
+            const initialLng = parseCoordinate(longitudeInput.value, defaultLng);
+
+            map = L.map('client-location-map').setView([initialLat, initialLng], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap',
+            }).addTo(map);
+
+            marker = L.marker([initialLat, initialLng], { draggable: true }).addTo(map);
+
+            if (! latitudeInput.value || ! longitudeInput.value) {
+                updateInputs(initialLat, initialLng);
+            }
+
+            map.on('click', function (event) {
+                updateInputs(event.latlng.lat, event.latlng.lng);
+                setMarkerPosition(event.latlng.lat, event.latlng.lng, false);
+            });
+
+            marker.on('dragend', function () {
+                const position = marker.getLatLng();
+                updateInputs(position.lat, position.lng);
+            });
+
+            latitudeInput.addEventListener('change', function () {
+                const lat = parseCoordinate(latitudeInput.value, initialLat);
+                const lng = parseCoordinate(longitudeInput.value, initialLng);
+                setMarkerPosition(lat, lng, true);
+            });
+
+            longitudeInput.addEventListener('change', function () {
+                const lat = parseCoordinate(latitudeInput.value, initialLat);
+                const lng = parseCoordinate(longitudeInput.value, initialLng);
+                setMarkerPosition(lat, lng, true);
+            });
+
+            setTimeout(function () {
+                map.invalidateSize();
+            }, 150);
+        }
+
         if (locateButton && latitudeInput && longitudeInput && navigator.geolocation) {
             locateButton.addEventListener('click', function () {
                 locateButton.disabled = true;
                 navigator.geolocation.getCurrentPosition(function (position) {
-                    latitudeInput.value = position.coords.latitude.toFixed(7);
-                    longitudeInput.value = position.coords.longitude.toFixed(7);
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    updateInputs(lat, lng);
+                    setMarkerPosition(lat, lng, true);
                     locateButton.disabled = false;
                 }, function () {
                     locateButton.disabled = false;
                 });
             });
         }
+
+        initMap();
     })();
 </script>
 @endpush

@@ -157,7 +157,7 @@
                 @if ($month && $year)
                     <div class="dashboard-card rounded-xl border border-primary-container/30 bg-primary-container/5 px-5 py-3">
                         <p class="text-xs text-on-surface-variant">إجمالي {{ $arabicMonths[$month] }} {{ $year }}</p>
-                        <p class="text-2xl font-bold text-primary-container" dir="ltr">{{ number_format((float) $monthlyTotal, 2) }} ج.م</p>
+                        <p class="text-2xl font-bold text-primary-container">@include('dashboard.partials.money', ['amount' => $monthlyTotal])</p>
                         <p class="mt-1 text-xs text-on-surface-variant">{{ $monthlyOrdersCount }} طلب</p>
                     </div>
                 @endif
@@ -241,7 +241,7 @@
                         <div class="col-span-2 text-sm font-semibold text-on-surface" dir="ltr">{{ $order->order_number }}</div>
                         <div class="col-span-2 text-sm text-on-surface-variant" dir="ltr">{{ optional($order->created_at)->format('Y-m-d H:i') }}</div>
                         <div class="col-span-2 text-sm text-on-surface">{{ $order->paymentMethodLabel() }}</div>
-                        <div class="col-span-2 text-sm font-semibold text-on-surface" dir="ltr">{{ number_format($order->total, 2) }} ج.م</div>
+                        <div class="col-span-2 text-sm font-semibold text-on-surface">@include('dashboard.partials.money', ['amount' => $order->total])</div>
                         <div class="col-span-2">
                             @include('dashboard.orders.partials.status-badge', ['order' => $order])
                         </div>

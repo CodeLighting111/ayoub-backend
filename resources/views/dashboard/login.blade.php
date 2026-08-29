@@ -135,5 +135,7 @@
             </div>
         </div>
     </footer>
+
+    @include('dashboard.partials.form-validation-ar')
 </body>
 </html>

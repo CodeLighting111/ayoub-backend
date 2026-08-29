@@ -57,7 +57,9 @@
                 <h2 class="mb-4 text-lg font-semibold text-on-surface">صورة القسم</h2>
 
                 @if ($about->image_url)
-                    <img alt="{{ $about->title }}" class="mb-4 h-40 w-full rounded-lg border border-outline-variant object-cover" src="{{ asset(ltrim($about->image_url, '/')) }}">
+                    <div class="mb-4 flex min-h-48 w-full items-center justify-center rounded-lg border border-outline-variant bg-surface-container p-4">
+                        <img alt="{{ $about->title }}" class="max-h-64 w-full object-contain" src="{{ asset(ltrim($about->image_url, '/')) }}">
+                    </div>
                     <p class="mb-3 text-xs text-on-surface-variant">اترك الحقل فارغاً للاحتفاظ بالصورة الحالية.</p>
                 @endif
 

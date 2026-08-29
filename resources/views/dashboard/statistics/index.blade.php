@@ -69,14 +69,14 @@
                 <span class="text-sm text-on-surface-variant">إجمالي المبيعات</span>
                 <span class="material-symbols-outlined text-primary-container">payments</span>
             </div>
-            <p class="text-3xl font-bold text-primary-container" dir="ltr">{{ number_format($stats['revenue'], 2) }} <span class="text-base">ج.م</span></p>
+            <p class="text-3xl font-bold text-primary-container">@include('dashboard.partials.money', ['amount' => $stats['revenue']])</p>
         </div>
         <div class="dashboard-card rounded-xl border border-outline-variant bg-surface-container-lowest p-6">
             <div class="mb-3 flex items-center justify-between">
                 <span class="text-sm text-on-surface-variant">متوسط قيمة الطلب</span>
                 <span class="material-symbols-outlined text-primary-container">avg_pace</span>
             </div>
-            <p class="text-3xl font-bold text-on-surface" dir="ltr">{{ number_format($stats['average_order_value'], 2) }} <span class="text-base">ج.م</span></p>
+            <p class="text-3xl font-bold text-on-surface">@include('dashboard.partials.money', ['amount' => $stats['average_order_value']])</p>
         </div>
         <div class="dashboard-card rounded-xl border border-outline-variant bg-surface-container-lowest p-6">
             <div class="mb-3 flex items-center justify-between">
@@ -127,7 +127,7 @@
                     <div class="grid grid-cols-12 items-center gap-4 p-6 text-right">
                         <div class="col-span-5 text-sm font-semibold text-on-surface">{{ $clientRow->client_name }}</div>
                         <div class="col-span-3 text-center text-sm text-on-surface-variant">{{ $clientRow->orders_count }}</div>
-                        <div class="col-span-4 text-center text-sm font-semibold text-on-surface" dir="ltr">{{ number_format((float) $clientRow->revenue, 2) }} ج.م</div>
+                        <div class="col-span-4 text-center text-sm font-semibold text-on-surface">@include('dashboard.partials.money', ['amount' => $clientRow->revenue])</div>
                     </div>
                 @empty
                     <div class="p-10 text-center text-sm text-on-surface-variant">لا توجد طلبات في هذه الفترة.</div>
@@ -152,7 +152,7 @@
                     <div class="grid grid-cols-12 items-center gap-4 p-6 text-right">
                         <div class="col-span-5 text-sm font-semibold text-on-surface">{{ $productRow->product_name }}</div>
                         <div class="col-span-3 text-center text-sm text-on-surface-variant">{{ $productRow->total_quantity }}</div>
-                        <div class="col-span-4 text-center text-sm font-semibold text-on-surface" dir="ltr">{{ number_format((float) $productRow->total_revenue, 2) }} ج.م</div>
+                        <div class="col-span-4 text-center text-sm font-semibold text-on-surface">@include('dashboard.partials.money', ['amount' => $productRow->total_revenue])</div>
                     </div>
                 @empty
                     <div class="p-10 text-center text-sm text-on-surface-variant">لا توجد مبيعات منتجات في هذه الفترة.</div>
@@ -179,7 +179,7 @@
                     <div class="grid grid-cols-12 items-center gap-4 p-6 text-right">
                         <div class="col-span-4 text-sm font-semibold text-on-surface">{{ $paymentRow['label'] }}</div>
                         <div class="col-span-4 text-center text-sm text-on-surface-variant">{{ $paymentRow['orders_count'] }}</div>
-                        <div class="col-span-4 text-center text-sm font-semibold text-on-surface" dir="ltr">{{ number_format($paymentRow['revenue'], 2) }} ج.م</div>
+                        <div class="col-span-4 text-center text-sm font-semibold text-on-surface">@include('dashboard.partials.money', ['amount' => $paymentRow['revenue']])</div>
                     </div>
                 @endforeach
             </div>

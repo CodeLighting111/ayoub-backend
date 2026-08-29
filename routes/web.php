@@ -119,6 +119,8 @@ Route::middleware(['auth:admin', 'admin.active'])->prefix('admin')->group(functi
     Route::get('/orders', [OrderController::class, 'index'])->name('admin.orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('admin.orders.show');
     Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('admin.orders.update-status');
+    Route::patch('/orders/{order}/items', [OrderController::class, 'updateItems'])->name('admin.orders.update-items');
+    Route::patch('/orders/{order}/cancellation-reason', [OrderController::class, 'updateCancellationReason'])->name('admin.orders.update-cancellation-reason');
 
     Route::get('/statistics', [StatisticsController::class, 'index'])->name('admin.statistics.index');
 

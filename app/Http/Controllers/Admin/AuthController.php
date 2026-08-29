@@ -26,6 +26,10 @@ class AuthController extends Controller
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
+        ], [
+            'email.required' => 'البريد الإلكتروني مطلوب.',
+            'email.email' => 'يرجى إدخال بريد إلكتروني صالح.',
+            'password.required' => 'كلمة المرور مطلوبة.',
         ]);
 
         if (! Auth::guard('admin')->attempt($credentials, $request->boolean('remember'))) {

@@ -62,7 +62,7 @@
                     <div class="col-span-2 text-sm text-on-surface">{{ $order->client_name }}</div>
                     <div class="col-span-1 text-sm text-on-surface-variant">{{ $order->branch_name ?: '—' }}</div>
                     <div class="col-span-2 text-sm text-on-surface-variant" dir="ltr">{{ optional($order->created_at)->format('Y-m-d H:i') }}</div>
-                    <div class="col-span-1 text-sm font-semibold text-on-surface" dir="ltr">{{ number_format($order->total, 2) }} ج.م</div>
+                    <div class="col-span-1 text-sm font-semibold text-on-surface">@include('dashboard.partials.money', ['amount' => $order->total])</div>
                     <div class="col-span-2">
                         @include('dashboard.orders.partials.status-badge', ['order' => $order])
                     </div>

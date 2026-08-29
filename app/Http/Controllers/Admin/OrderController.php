@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\OrderCancellationReasonRequest;
 use App\Http\Requests\Admin\OrderStatusRequest;
+use App\Http\Requests\Admin\OrderUpdateItemsRequest;
 use App\Models\Order;
 use App\Services\OrderService;
 use Illuminate\Http\RedirectResponse;
@@ -68,10 +70,35 @@ class OrderController extends Controller
             $order,
             $request->validated('status'),
             $request->validated('expected_delivery_at'),
+            $request->validated('cancellation_reason'),
         );
 
         return redirect()
             ->route('admin.orders.show', $order)
             ->with('success', 'تم تحديث الطلب بنجاح.');
+    }
+
+    public function updateCancellationReason(OrderCancellationReasonRequest $request, Order $order): RedirectResponse
+    {
+        $this->orderService->updateCancellationReason(
+            $order,
+            $request->validated('cancellation_reason'),
+        );
+
+        return redirect()
+            ->route('admin.orders.show', $order)
+            ->with('success', 'تم حفظ سبب الإلغاء بنجاح.');
+    }
+
+    public function updateItems(OrderUpdateItemsRequest $request, Order $order): RedirectResponse
+    {
+        $this->orderService->updateItemQuantities(
+            $order,
+            $request->validated('quantities'),
+        );
+
+        return redirect()
+            ->route('admin.orders.show', $order)
+            ->with('success', 'تم تحديث كميات المنتجات بنجاح.');
     }
 }

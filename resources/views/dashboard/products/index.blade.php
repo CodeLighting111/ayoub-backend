@@ -64,12 +64,12 @@
                         <div>{{ $product->subCategory?->mainCategory?->title ?? '—' }}</div>
                         <div class="text-xs text-on-surface-variant/80">{{ $product->subCategory?->title ?? '' }}</div>
                     </div>
-                    <div class="col-span-1 text-sm font-semibold text-on-surface" dir="ltr">{{ number_format($product->discount_price ?? $product->price, 2) }} ج.م</div>
+                    <div class="col-span-1 text-sm font-semibold text-on-surface">@include('dashboard.partials.money', ['amount' => $product->discount_price ?? $product->price])</div>
                     <div class="col-span-1">
                         @if ($product->stock <= \App\Models\AdminNotification::LOW_STOCK_THRESHOLD)
                             <span class="inline-flex rounded-full bg-error/10 px-2.5 py-1 text-xs font-semibold text-error">{{ $product->stock }}</span>
                         @else
-                            <span class="text-sm text-on-surface-variant">{{ $product->stock }}</span>
+                            <span class="inline-flex rounded-full bg-secondary-container/40 px-2.5 py-1 text-xs font-semibold text-on-secondary-container">{{ $product->stock }}</span>
                         @endif
                     </div>
                     <div class="col-span-1">

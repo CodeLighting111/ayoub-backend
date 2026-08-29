@@ -2,11 +2,9 @@
 
 namespace App\Http\Requests\Admin;
 
-use App\Models\Order;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class OrderStatusRequest extends FormRequest
+class OrderCancellationReasonRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -16,8 +14,6 @@ class OrderStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => ['required', Rule::in(Order::STATUSES)],
-            'expected_delivery_at' => ['nullable', 'date'],
             'cancellation_reason' => ['nullable', 'string', 'max:1000'],
         ];
     }
@@ -25,9 +21,6 @@ class OrderStatusRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'status.required' => 'حالة الطلب مطلوبة.',
-            'status.in' => 'حالة الطلب غير صالحة.',
-            'expected_delivery_at.date' => 'تاريخ التوصيل المتوقع غير صالح.',
             'cancellation_reason.max' => 'سبب الإلغاء يجب ألا يتجاوز 1000 حرف.',
         ];
     }
