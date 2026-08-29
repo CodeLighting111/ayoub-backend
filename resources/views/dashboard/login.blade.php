@@ -20,39 +20,33 @@
                 radial-gradient(#e2e2e2 1px, transparent 1px);
             background-size: auto, auto, 20px 20px;
         }
-        .login-hero-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
+        .login-hero-logo {
+            max-height: min(70vh, 28rem);
+            width: auto;
+            max-width: min(85%, 32rem);
+            object-fit: contain;
         }
     </style>
 </head>
 <body class="bg-background text-on-surface font-body h-screen flex flex-col overflow-hidden">
     <main class="flex flex-1 min-h-0 flex-col overflow-hidden md:flex-row">
-        <div class="relative hidden h-full min-h-0 overflow-hidden md:block md:w-1/2">
+        <div class="relative hidden h-full min-h-0 items-center justify-center overflow-hidden bg-login-pattern px-10 md:flex md:w-1/2 lg:px-16">
             <img
-                alt="منتجات سوبرماركت مصرية - جهينة، شيبسي، حياة، بيبسي"
-                class="login-hero-image absolute inset-0"
+                alt="شعار {{ $platformName }}"
+                class="login-hero-logo"
                 decoding="sync"
                 fetchpriority="high"
                 loading="eager"
-                sizes="50vw"
-                src="{{ asset('images/dashboard/login-hero.png') }}"
-                srcset="{{ asset('images/dashboard/login-hero.png') }} 1x, {{ asset('images/dashboard/login-hero@2x.png') }} 2x"
+                src="{{ $platformLogoUrl }}"
             >
-            <div class="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-on-background/70 to-transparent p-10 lg:p-16 xl:p-20">
-                <h2 class="mb-4 text-3xl font-semibold leading-tight text-white lg:text-5xl">لوجستيات البقالة المبسطة.</h2>
-                <p class="max-w-lg text-lg leading-relaxed text-white/90 lg:text-xl">قم بإدارة سلاسل التوريد والمخزون وعمليات التسليم بكفاءة من خلال لوحة التحكم الاحترافية الخاصة بنا.</p>
-            </div>
         </div>
 
         <div class="flex h-full w-full flex-col items-center justify-center overflow-y-auto bg-surface-container-lowest px-8 py-10 md:w-1/2 md:px-16 lg:px-24">
             <div class="w-full max-w-xl">
-                <div class="mb-8 flex justify-center">
+                <div class="mb-8 flex justify-center md:hidden">
                     <img
                         alt="شعار {{ $platformName }}"
-                        class="h-52 w-auto max-w-[400px] object-contain sm:max-w-[460px] md:h-60 md:max-w-[520px] lg:h-72 lg:max-w-[580px]"
+                        class="h-44 w-auto max-w-[320px] object-contain"
                         src="{{ $platformLogoUrl }}"
                     >
                 </div>
